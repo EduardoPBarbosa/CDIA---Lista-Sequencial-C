@@ -1,0 +1,92 @@
+//Trabalho 01 - Eduardo P. Barbosa 1000
+
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+//Função resize
+int* resize(int* lista, int& capacidade_atual, int nova_capacidade) {
+    int* nova_lista = new int[nova_capacidade];
+    for (int i = 0; i < capacidade_atual && i < nova_capacidade; i++) {
+        nova_lista[i] = lista[i];
+    }
+        
+    delete[] lista; // Libera a memória antiga
+    capacidade_atual = nova_capacidade;
+    return nova_lista;
+}
+
+int main() {
+    int capacidade_atual = 50; // Capacidade inicial
+    int* lista = new int[capacidade_atual]; 
+    int tamanho_atual = capacidade_atual; 
+
+    for (int i = 0; i < tamanho_atual; i++) {
+        lista[i] = i + 1;
+    }
+
+    while (true) {
+        cout << "\nA lista possui " << tamanho_atual << " elementos." << endl;
+        int opcao;
+        cout << "\nDeseja:\n(1) - Adicionar elementos\n(2) - Remover elementos\n(3) - Sair\nEscolha: ";
+        cin >> opcao;
+        
+        //Adicionar elementos
+        if (opcao == 1) { 
+            int elementos_adicionar = tamanho_atual; // Dobra o tamanho atual
+            cout << "Adicionando " << elementos_adicionar << " elementos\n";
+
+            for (int i = 0; i < elementos_adicionar; i++) {
+                if (tamanho_atual == capacidade_atual) {
+                    cout << "Capacidade total atingida! Lista redimensionada para o dobro\n";
+                    lista = resize(lista, capacidade_atual, capacidade_atual * 2);
+                }
+                
+                lista[tamanho_atual] = tamanho_atual + 1; 
+                tamanho_atual++;
+            }
+            cout << elementos_adicionar << " elementos adicionados" << endl;
+        } 
+        
+        //Remover elementos
+        else if (opcao == 2) { 
+            if (tamanho_atual == 0) {
+                cout << "A lista está vazia!" << endl;;
+                continue;
+            }
+
+            cout << "Removendo elementos" << endl;
+            while (tamanho_atual > 0) {
+                tamanho_atual--; 
+                cout << "Elemento removido. Elementos restantes: " << tamanho_atual << endl;
+
+                //Verifica se está em 25% ou menos da capacidade atual
+                if (tamanho_atual <= capacidade_atual / 4 && capacidade_atual > 50) {
+                    cout << "Atingiu 25% da capacidade. Capacidade anterior reduzida pela metade" << endl;
+                    lista = resize(lista, capacidade_atual, capacidade_atual / 2);
+                }
+
+                cout << "Continuar removendo? (1 - Sim / 0 - Não): ";
+                int continuar;
+                cin >> continuar;
+                if (continuar == 0) {
+                   break; 
+                }
+            }
+        }
+        
+        //Sair
+        else if (opcao == 3) { 
+            cout << "Programa encerrado" << endl;
+            break;
+        }
+        
+        else {
+            cout << "Opção inválida! Tente novamente" << endl;
+        }
+    }
+
+    // Libera a memória alocada
+    delete[] lista;
+    return 0;
+}
